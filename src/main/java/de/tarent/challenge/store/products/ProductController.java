@@ -1,12 +1,6 @@
 package de.tarent.challenge.store.products;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
@@ -19,19 +13,52 @@ public class ProductController {
     }
 
 
-
-    // Aggregate root
-
     @GetMapping("/products")
-    List<Product> all() {
+    public List<Product> all() {
         return productService.retrieveAllProducts();
     }
 
-    @GetMapping("/product/{id}")
-    Product one(@PathVariable Long id) throws Throwable {
 
-        return productService.retrieveProductById(id).orElseThrow(() -> new ProductNotFoundException("Product not found, id="+id));
+    @GetMapping("/product/{id}")
+    public Product retrieveProductById(@PathVariable Long id) {
+        return productService.retrieveProductById(id).orElseThrow(() -> new ProductNotFoundException("Product not found, id=" + id));
     }
+
+
+    @GetMapping("/product/sku/{sku}")
+    public Product retrieveProductBySku(@PathVariable String sku) {
+        return productService.retrieveProductBySku(sku);
+    }
+
+
+    @GetMapping("/product/name/{name}")
+    public List<Product> retrieveProductByName(@PathVariable String name) {
+        return productService.retrieveProductByName(name);
+    }
+
+
+    @PostMapping("/product")
+    public Product saveProduct(@RequestBody Product object) {
+
+        ProductValidator.getInstance().validate(object);
+
+        //  check ob sku  unique
+        Product productbySku =  productService.retrieveProductBySku(object.getSku());
+        if (productbySku!=null && object.getId()!=null && object.getId().equals(productbySku.getId())) {
+            throw new ProductInvalidException("Product.sku is not unique");
+        }
+
+        return productService.save(object);
+    }
+
+
+    @DeleteMapping("/product/{id}")
+    public void deleteProduct(@PathVariable Long id) {
+        if (!productService.retrieveProductById(id).isPresent()) return;
+
+        productService.delete(productService.retrieveProductById(id).get());
+    }
+
 
 
 

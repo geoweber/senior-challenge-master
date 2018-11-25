@@ -17,8 +17,7 @@ public class ProductService {
 
     //create and  updare
     public Product save(Product object) {
-        Product saved = repository.saveAndFlush(object);
-        return saved;
+        return repository.save(object);
     }
 
     //read
@@ -35,7 +34,7 @@ public class ProductService {
         return repository.findById(id);
     }
 
-    public Product retrieveProductByName(String name) {
+    public List<Product> retrieveProductByName(String name) {
         return repository.findByName(name);
     }
 

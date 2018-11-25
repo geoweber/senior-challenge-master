@@ -1,6 +1,5 @@
 package de.tarent.challenge.store.products;
 
-import org.hibernate.validator.internal.engine.ConstraintViolationImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,6 +8,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import javax.validation.ConstraintViolationException;
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,7 +30,7 @@ class ProductServiceTest {
         eans.add("222");
         eans.add("333");
 
-        BigDecimal price = BigDecimal.valueOf(10.20);
+        int price = 1020;
 
 
         {   //test create
@@ -51,7 +51,7 @@ class ProductServiceTest {
 
             //name
             String nameUPD = name + "UPD";
-            assertNull(service.retrieveProductByName(nameUPD));
+            assertTrue(service.retrieveProductByName(nameUPD).isEmpty());
 
             object.setName(nameUPD);
             service.save(object);
@@ -60,13 +60,18 @@ class ProductServiceTest {
             //eans
             String eansUpd = "444";
 
-            Product productActual = service.retrieveProductByName(nameUPD);
-            assertFalse(productActual.getEans().contains(eansUpd));
+            Product productExpected = service.retrieveProductByName(nameUPD).get(0);
+
+
+            assertFalse(productExpected.getEans().contains(eansUpd));
 
             eans.add(eansUpd);
-            productActual.setEans(eans);
-            service.save(productActual);
-            assertTrue(service.retrieveProductByName(nameUPD).getEans().contains(eansUpd));
+            productExpected.setEans(eans);
+            service.save(productExpected);
+
+            Product productReal = service.retrieveProductBySku(skuUPD);
+
+            assertTrue(productReal.getEans().contains(eansUpd));
 
         }
 
@@ -81,7 +86,7 @@ class ProductServiceTest {
                 service.save(object);
                 fail("SKU darf nicht leer sein");
             } catch (ConstraintViolationException ex) {
-
+                assertNotNull(ex.getMessage());
             }
 
 
@@ -90,7 +95,7 @@ class ProductServiceTest {
                 service.save(object);
                 fail("SKU darf nicht leer sein");
             } catch (ConstraintViolationException ex) {
-
+                assertNotNull(ex.getMessage());
             }
 
             try {
@@ -103,9 +108,21 @@ class ProductServiceTest {
                 service.save(object);
                 fail("Unique index  violation for column SKU");
             } catch (DataIntegrityViolationException ex) {
-
+                assertNotNull(ex.getMessage());
             }
         }
+
+        //-----------------------------------------------
+        {
+            try {
+                Product object = new Product(sku, name, eans, -1020);
+                service.save(object);
+                fail("Price muss positiv sein");
+            } catch (ConstraintViolationException ex) {
+                assertNotNull(ex.getMessage());
+            }
+        }
+
 
         //------------------------------------------------
         // test for Name field: required, not empty
@@ -118,7 +135,7 @@ class ProductServiceTest {
                 service.save(object);
                 fail("Name darf nicht null sein");
             } catch (ConstraintViolationException ex) {
-
+                assertNotNull(ex.getMessage());
             }
 
 
@@ -127,7 +144,7 @@ class ProductServiceTest {
                 service.save(object);
                 fail("Name darf nicht leer sein");
             } catch (ConstraintViolationException ex) {
-
+                assertNotNull(ex.getMessage());
             }
         }
 
@@ -139,7 +156,7 @@ class ProductServiceTest {
             service.save(object);
             fail("Eans darf nicht leer sein");
         } catch (ConstraintViolationException ex) {
-
+            assertNotNull(ex.getMessage());
         }
 
         try {
@@ -148,11 +165,11 @@ class ProductServiceTest {
             service.save(object);
             fail("Eans darf nicht leer sein");
         } catch (ConstraintViolationException ex) {
-
+            assertNotNull(ex.getMessage());
         }
 
         /*
-        TODO check ob enas not empty elemet have at least on not empty elemnt occur ny validation
+        TODO check ob eans have at least one not empty element occur ny validation
 
         */
     }
@@ -170,12 +187,16 @@ class ProductServiceTest {
 
     @Test
     void retrieveById() {
-        assertEquals("Couscous", service.retrieveProductById(5L).getName());
+        Optional<Product> product = service.retrieveProductById(5L);
+
+        assertTrue(product.isPresent());
+
+        assertEquals("Couscous", product.get().getName());
     }
 
     @Test
     void retrieveByName() {
-        assertEquals("B001", service.retrieveProductByName("Couscous").getSku());
+        assertEquals("B001", service.retrieveProductByName("Couscous").get(0).getSku());
     }
 
     @Test
@@ -187,17 +208,17 @@ class ProductServiceTest {
         eans.add("111");
         eans.add("222");
         eans.add("333");
-        BigDecimal price = BigDecimal.valueOf(10.20);
+        Integer price = 1020;
 
         Product object = new Product(sku, name, eans, price);
         Product saved = service.save(object);
         assertNotNull(saved);
 
-        assertEquals(sku, service.retrieveProductByName(name).getSku());
+        assertEquals(sku, service.retrieveProductByName(name).get(0).getSku());
 
         service.delete(object);
 
-        assertNull(service.retrieveProductByName(name));
+        assertTrue(service.retrieveProductByName(name).isEmpty());
 
 
     }

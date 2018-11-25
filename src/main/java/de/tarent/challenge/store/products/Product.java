@@ -1,13 +1,12 @@
 package de.tarent.challenge.store.products;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.collect.Sets;
 import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
-import java.math.BigDecimal;
+import javax.validation.constraints.Positive;
 import java.util.Objects;
 import java.util.Set;
 
@@ -27,18 +26,24 @@ public class Product {
     @NotBlank
     private String sku;
 
-    private BigDecimal price;
+
+    //required, greater than 0
+    @Positive
+    private Integer price;
 
 
     @ElementCollection(fetch = FetchType.EAGER)
     @NotEmpty
-   // @CollectionTable(name = "PRODUCT_EANS", joinColumns = @JoinColumn(name = "product_id"))
+    // @CollectionTable(name = "PRODUCT_EANS", joinColumns = @JoinColumn(name = "product_id"))
     private Set<String> eans;
 
+    /**
+     * need for  jpa
+     */
     private Product() {
     }
 
-    public Product(String sku, String name, Set<String> eans, BigDecimal price) {
+    public Product(String sku, String name, Set<String> eans, int price) {
         this.sku = sku;
         this.name = name;
         this.eans = eans;
