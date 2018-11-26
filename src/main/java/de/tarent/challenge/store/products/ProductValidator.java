@@ -1,10 +1,10 @@
 package de.tarent.challenge.store.products;
 
-public class ProductValidator {
+class ProductValidator {
 
     private static ProductValidator instance = new ProductValidator();
 
-    public static ProductValidator getInstance() {
+    static ProductValidator getInstance() {
         return instance;
     }
 
@@ -21,7 +21,7 @@ public class ProductValidator {
         //- SKU: required, not empty, unique
         //- Name: required, not empty
         //- EANs: At least one, non-empty item
-        // price
+        //- Price: required, greater than 0
 
 
         if (object.getSku() == null|| object.getSku().trim().isEmpty()) {
@@ -33,11 +33,11 @@ public class ProductValidator {
         }
 
         if (object.getPrice()<=0) {
-            throw new ProductInvalidException("Product.Price is illegal");
+            throw new ProductInvalidException("Product.price is illegal");
         }
 
         if (object.getEans() == null|| object.getEans().isEmpty()) {
-            throw new ProductInvalidException("Product.eans is empty");
+            throw new ProductInvalidException("Product.EANs is empty");
         }
 
 
@@ -49,7 +49,7 @@ public class ProductValidator {
         }
 
         if(notFound){
-            throw new ProductInvalidException("Product.eans is empty");
+            throw new ProductInvalidException("Product.EANs is empty");
         }
 
     }

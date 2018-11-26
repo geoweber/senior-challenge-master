@@ -38,6 +38,6 @@ class CustomerServiceTest {
 
     @Test
     void findByName() {
-        assertTrue(service.findByName("user").getId()==1L);
+        assertEquals(1L, (long) service.findByName("user").getId());
     }
 }

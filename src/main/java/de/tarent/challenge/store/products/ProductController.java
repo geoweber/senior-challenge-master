@@ -1,62 +1,98 @@
 package de.tarent.challenge.store.products;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
 public class ProductController {
 
-    private final ProductService productService;
+    private final ProductService service;
 
-    public ProductController(ProductService productService) {
-        this.productService = productService;
-    }
-
-
-    @GetMapping("/products")
-    public List<Product> all() {
-        return productService.retrieveAllProducts();
-    }
-
-
-    @GetMapping("/product/{id}")
-    public Product retrieveProductById(@PathVariable Long id) {
-        return productService.retrieveProductById(id).orElseThrow(() -> new ProductNotFoundException("Product not found, id=" + id));
-    }
-
-
-    @GetMapping("/product/sku/{sku}")
-    public Product retrieveProductBySku(@PathVariable String sku) {
-        return productService.retrieveProductBySku(sku);
-    }
-
-
-    @GetMapping("/product/name/{name}")
-    public List<Product> retrieveProductByName(@PathVariable String name) {
-        return productService.retrieveProductByName(name);
+    @Autowired
+    public ProductController(ProductService service) {
+        Assert.notNull(service, "ProductService should be not null");
+        this.service = service;
     }
 
 
     @PostMapping("/product")
-    public Product saveProduct(@RequestBody Product object) {
+    public Product save(@RequestBody Product object) {
 
         ProductValidator.getInstance().validate(object);
 
         //  check ob sku  unique
-        Product productbySku =  productService.retrieveProductBySku(object.getSku());
-        if (productbySku!=null && object.getId()!=null && object.getId().equals(productbySku.getId())) {
+        Product productBySku = service.retrieveBySku(object.getSku());
+        if (productBySku != null && object.getId() != null && object.getId().equals(productBySku.getId()))
             throw new ProductInvalidException("Product.sku is not unique");
-        }
 
-        return productService.save(object);
+        return service.save(object);
     }
 
 
-    @DeleteMapping("/product/{id}")
-    public void deleteProduct(@PathVariable Long id) {
-        if (!productService.retrieveProductById(id).isPresent()) return;
+    /**
+     * Get all existing products
+     *
+     * @return list of products
+     */
+    @GetMapping("/products")
+    public List<Product> all() {
+        return service.retrieveAll();
+    }
 
-        productService.delete(productService.retrieveProductById(id).get());
+
+    /**
+     * Get product by id
+     *
+     * @param id - id of product from interest
+     * @return product by id
+     */
+    @GetMapping("/product/{id}")
+    public Product retrieveById(@PathVariable Long id) {
+        return service.retrieveById(id).orElseThrow(() -> new ProductNotFoundException("Product not found, id=" + id));
+    }
+
+
+    /**
+     * Get product by sky
+     *
+     * @param sku - sku of product from interest
+     * @return product by sku
+     */
+    @GetMapping("/product/sku/{sku}")
+    public Product retrieveBySku(@PathVariable String sku) {
+        return service.retrieveBySku(sku);
+    }
+
+
+    /**
+     * Get list of products by name
+     *
+     * @param name - name of product from interest
+     * @return -list of products (der name is not unique)
+     */
+    @GetMapping("/product/name/{name}")
+    public List<Product> retrieveByName(@PathVariable String name) {
+        return service.retrieveByName(name);
+    }
+
+
+    /**
+     * Delete product by id
+     *
+     * @param id from deleted product
+     */
+    @DeleteMapping("/product/{id}")
+    public void delete(@PathVariable Long id) {
+
+        if (id == null || id <= 0) {
+            return;
+        }
+
+        if (service.retrieveById(id).isPresent())
+            service.delete(service.retrieveById(id).get());
     }
 
 

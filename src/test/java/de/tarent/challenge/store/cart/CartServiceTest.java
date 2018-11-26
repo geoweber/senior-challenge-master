@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,38 +23,55 @@ class CartServiceTest {
     @Autowired
     private ProductService productService;
 
+
     @Test
     void save() {
 
-        Cart object=new Cart();
+        Cart object = new Cart();
+        Set<CartItem> items = new HashSet<>();
+        Product product1 = productService.retrieveBySku("S-155");
+        Product product2 = productService.retrieveBySku("B001");
+        CartItem item1 = new CartItem(product1, 5);
+        CartItem item2 = new CartItem(product2, 10);
 
-        Set<CartItem> products=new HashSet<>();
+        items.add(item1);
+        items.add(item2);
+        object.setProducts(items);
+        object.setCheckedOut(true);
+        LocalDate checkedDate = LocalDate.now();
+        object.setCheckedDate(checkedDate);
+        object = service.save(object);
 
-        Product product=productService.retrieveProductBySku("B001");
 
-        CartItem item1=new CartItem(product, 5);
+        Cart savedCart = service.retrieveById(object.getId()).get();
 
+        assertNotNull(savedCart);
+        assertTrue(savedCart.isCheckedOut());
+        assertEquals(checkedDate, savedCart.getCheckedDate());
 
-        int total;
+        assertEquals(items.size(), savedCart.getProducts().size());
 
-
-       // CartItem item2=new CartItem();
-        //CartItem item3=new CartItem();
-
-        service.save(object);
-
+        assertTrue(savedCart.getProducts().contains(item1));
+        assertTrue(savedCart.getProducts().contains(item2));
 
     }
 
     @Test
-    void retrieveAllProducts() {
+    void retrieveAll() {
+        //TODO 26.11.2018
+        fail();
+
     }
 
     @Test
-    void retrieveCartById() {
+    void retrieveById() {
+        //TODO 26.11.2018
+        fail();
     }
 
     @Test
     void delete() {
+        //TODO 26.11.2018
+        fail();
     }
 }

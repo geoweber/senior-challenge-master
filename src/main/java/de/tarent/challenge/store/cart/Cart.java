@@ -1,10 +1,10 @@
 package de.tarent.challenge.store.cart;
 
-import de.tarent.challenge.store.products.Product;
 import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.time.LocalDate;
 import java.util.Set;
 
 
@@ -19,11 +19,14 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    //@ElementCollection(fetch = FetchType.EAGER)
     @NotEmpty
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<CartItem> products;
 
-    private boolean checked;
+    private boolean checkedOut;
+
+    private LocalDate checkedDate;
 
 
 }

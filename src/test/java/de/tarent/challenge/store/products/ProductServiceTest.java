@@ -6,7 +6,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import javax.validation.ConstraintViolationException;
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -39,28 +38,28 @@ class ProductServiceTest {
         }
 
         {   //test update
-            Product object = service.retrieveProductBySku(sku);
+            Product object = service.retrieveBySku(sku);
 
             //sku
             String skuUPD = sku + "UPD";
-            assertNull(service.retrieveProductBySku(skuUPD));
+            assertNull(service.retrieveBySku(skuUPD));
 
             object.setSku(skuUPD);
             service.save(object);
-            assertNotNull(service.retrieveProductBySku(skuUPD));
+            assertNotNull(service.retrieveBySku(skuUPD));
 
             //name
             String nameUPD = name + "UPD";
-            assertTrue(service.retrieveProductByName(nameUPD).isEmpty());
+            assertTrue(service.retrieveByName(nameUPD).isEmpty());
 
             object.setName(nameUPD);
             service.save(object);
-            assertNotNull(service.retrieveProductByName(nameUPD));
+            assertNotNull(service.retrieveByName(nameUPD));
 
             //eans
             String eansUpd = "444";
 
-            Product productExpected = service.retrieveProductByName(nameUPD).get(0);
+            Product productExpected = service.retrieveByName(nameUPD).get(0);
 
 
             assertFalse(productExpected.getEans().contains(eansUpd));
@@ -69,7 +68,7 @@ class ProductServiceTest {
             productExpected.setEans(eans);
             service.save(productExpected);
 
-            Product productReal = service.retrieveProductBySku(skuUPD);
+            Product productReal = service.retrieveBySku(skuUPD);
 
             assertTrue(productReal.getEans().contains(eansUpd));
 
@@ -168,26 +167,25 @@ class ProductServiceTest {
             assertNotNull(ex.getMessage());
         }
 
-        /*
-        TODO check ob eans have at least one not empty element occur ny validation
+        //check ob 'eans have at least one not empty element' occur ny validation
 
-        */
+
     }
 
 
     @Test
-    void retrieveAllProducts() {
-        assertNotNull(service.retrieveAllProducts());
+    void retrieveAll() {
+        assertNotNull(service.retrieveAll());
     }
 
     @Test
-    void retrieveProductBySku() {
-        assertEquals("Couscous", service.retrieveProductBySku("B001").getName());
+    void retrieveBySku() {
+        assertEquals("Couscous", service.retrieveBySku("B001").getName());
     }
 
     @Test
     void retrieveById() {
-        Optional<Product> product = service.retrieveProductById(5L);
+        Optional<Product> product = service.retrieveById(5L);
 
         assertTrue(product.isPresent());
 
@@ -196,7 +194,7 @@ class ProductServiceTest {
 
     @Test
     void retrieveByName() {
-        assertEquals("B001", service.retrieveProductByName("Couscous").get(0).getSku());
+        assertEquals("B001", service.retrieveByName("Couscous").get(0).getSku());
     }
 
     @Test
@@ -214,11 +212,11 @@ class ProductServiceTest {
         Product saved = service.save(object);
         assertNotNull(saved);
 
-        assertEquals(sku, service.retrieveProductByName(name).get(0).getSku());
+        assertEquals(sku, service.retrieveByName(name).get(0).getSku());
 
         service.delete(object);
 
-        assertTrue(service.retrieveProductByName(name).isEmpty());
+        assertTrue(service.retrieveByName(name).isEmpty());
 
 
     }

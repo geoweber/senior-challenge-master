@@ -3,6 +3,7 @@ package de.tarent.challenge.store.products;
 import com.google.common.base.MoreObjects;
 import lombok.Data;
 
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -22,25 +23,34 @@ public class Product {
     @NotBlank
     private String name;
 
+    /**
+    * Stock Keeping Unit -required, not empty, unique
+     */
     @Column(unique = true)
     @NotBlank
     private String sku;
 
-
-    //required, greater than 0
+    /**
+     * Price (in cent)
+     * required, greater than 0
+     */
     @Positive
     private Integer price;
 
 
+    /**
+     * European Article Number -  At least one, non-empty item
+     * see de.tarent.challenge.store.products.ProductValidator
+     */
     @ElementCollection(fetch = FetchType.EAGER)
     @NotEmpty
-    // @CollectionTable(name = "PRODUCT_EANS", joinColumns = @JoinColumn(name = "product_id"))
     private Set<String> eans;
 
     /**
-     * need for  jpa
+     * default constructor for hibernate
      */
     private Product() {
+        super();
     }
 
     public Product(String sku, String name, Set<String> eans, int price) {
