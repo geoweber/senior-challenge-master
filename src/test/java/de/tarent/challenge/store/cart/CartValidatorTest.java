@@ -3,8 +3,7 @@ package de.tarent.challenge.store.cart;
 import de.tarent.challenge.store.products.Product;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,7 +27,7 @@ class CartValidatorTest {
         //Contains a non-empty list of items
         try {
             Cart object = new Cart();
-            object.setProducts(new HashSet<>());
+            object.setCartItems(new HashSet<>());
             CartValidator.getInstance().validate(object);
             fail();
         } catch (CartInvalidException ex) {
@@ -46,7 +45,7 @@ class CartValidatorTest {
 
             items.add(item1);
             items.add(item2);
-            object.setProducts(items);
+            object.setCartItems(items);
             CartValidator.getInstance().validate(object);
             fail();
         } catch (CartInvalidException ex) {
@@ -65,7 +64,7 @@ class CartValidatorTest {
 
             items.add(item1);
             items.add(item2);
-            object.setProducts(items);
+            object.setCartItems(items);
             object.setCheckedOut(true);
             object.setCheckedDate(null);
             CartValidator.getInstance().validate(object);
@@ -86,9 +85,9 @@ class CartValidatorTest {
 
             items.add(item1);
             items.add(item2);
-            object.setProducts(items);
+            object.setCartItems(items);
             object.setCheckedOut(true);
-            object.setCheckedDate(LocalDate.now());
+            object.setCheckedDate(LocalDateTime.now());
             CartValidator.getInstance().validate(object);
 
         } catch (CartInvalidException ex) {

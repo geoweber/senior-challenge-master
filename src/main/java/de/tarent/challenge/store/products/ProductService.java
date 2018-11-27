@@ -6,6 +6,9 @@ import org.springframework.util.Assert;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * product functionality
+ */
 @Service
 public class ProductService {
 
@@ -47,7 +50,6 @@ public class ProductService {
         Optional<Product> product = repository.findById(object.getId());
 
         product.ifPresent(repository::delete);
-
     }
 
 

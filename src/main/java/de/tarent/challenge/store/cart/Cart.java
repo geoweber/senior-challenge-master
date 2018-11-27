@@ -1,15 +1,17 @@
 package de.tarent.challenge.store.cart;
 
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Set;
 
 
 /**
- * cart
+ * cart entity
  */
 @Data
 @Entity
@@ -19,14 +21,29 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //@ElementCollection(fetch = FetchType.EAGER)
     @NotEmpty
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<CartItem> products;
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true, mappedBy = "cart")
+    @OrderBy(value = "id asc")
+    private Set<CartItem> cartItems;
 
     private boolean checkedOut;
 
-    private LocalDate checkedDate;
+    @DateTimeFormat(pattern = "HH:mm MM-dd-yyyy")
+    private LocalDateTime checkedDate;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Cart cart = (Cart) o;
+        return checkedOut == cart.checkedOut &&
+                Objects.equals(id, cart.id) &&
+                Objects.equals(cartItems, cart.cartItems) &&
+                Objects.equals(checkedDate, cart.checkedDate);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, cartItems, checkedOut, checkedDate);
+    }
 }

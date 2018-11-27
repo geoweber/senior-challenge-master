@@ -3,9 +3,11 @@ package de.tarent.challenge.store.products;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
+/**
+ * RESTful resources for managing products.
+ */
 @RestController
 public class ProductController {
 
@@ -17,6 +19,13 @@ public class ProductController {
         this.service = service;
     }
 
+    /**
+     * create or  update  a product object
+     *
+     * @param object - product to save - must not be {@literal null}.
+     * @return the saved product will never be {@literal null}.
+     * @throws ProductInvalidException - product is invalid
+     */
 
     @PostMapping("/product")
     public Product save(@RequestBody Product object) {
@@ -33,21 +42,11 @@ public class ProductController {
 
 
     /**
-     * Get all existing products
+     * Retrieves a product by its id.
      *
-     * @return list of products
-     */
-    @GetMapping("/products")
-    public List<Product> all() {
-        return service.retrieveAll();
-    }
-
-
-    /**
-     * Get product by id
-     *
-     * @param id - id of product from interest
-     * @return product by id
+     * @param id must not be {@literal null}.
+     * @return the product with the given id or throw ProductNotFoundException if none found
+     * @throws ProductNotFoundException - product not found
      */
     @GetMapping("/product/{id}")
     public Product retrieveById(@PathVariable Long id) {
@@ -56,10 +55,21 @@ public class ProductController {
 
 
     /**
-     * Get product by sky
+     * Returns all products.
+     *
+     * @return list of existing products
+     */
+    @GetMapping("/products")
+    public List<Product> all() {
+        return service.retrieveAll();
+    }
+
+
+    /**
+     * Return product by sky
      *
      * @param sku - sku of product from interest
-     * @return product by sku
+     * @return product
      */
     @GetMapping("/product/sku/{sku}")
     public Product retrieveBySku(@PathVariable String sku) {
@@ -71,7 +81,7 @@ public class ProductController {
      * Get list of products by name
      *
      * @param name - name of product from interest
-     * @return -list of products (der name is not unique)
+     * @return -list of products (name is not unique)
      */
     @GetMapping("/product/name/{name}")
     public List<Product> retrieveByName(@PathVariable String name) {
@@ -80,9 +90,9 @@ public class ProductController {
 
 
     /**
-     * Delete product by id
+     * Deletes the given cart.
      *
-     * @param id from deleted product
+     * @param id from deleted cart
      */
     @DeleteMapping("/product/{id}")
     public void delete(@PathVariable Long id) {

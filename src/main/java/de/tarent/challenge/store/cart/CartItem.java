@@ -5,7 +5,8 @@ import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.Positive;
-import java.math.BigDecimal;
+import java.util.Objects;
+
 
 /**
  * a row in  cart
@@ -15,12 +16,12 @@ import java.math.BigDecimal;
 public class CartItem {
 
     /**
-     * default constructor fpr hibernate
+     * default constructor for hibernate initialisation
      */
     private CartItem() {
     }
 
-    public CartItem(Product product, int quantity) {
+    CartItem(Product product, int quantity) {
         this.product = product;
         this.quantity = quantity;
         this.total = product.getPrice() * quantity;
@@ -41,6 +42,26 @@ public class CartItem {
     @Positive
     private Integer quantity;
 
-    @Positive
-    private Integer total;
+    private float total;
+
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+    @JoinColumn(name = "cart_id")
+    private Cart cart;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CartItem cartItem = (CartItem) o;
+        return Float.compare(cartItem.total, total) == 0 &&
+                Objects.equals(id, cartItem.id) &&
+                Objects.equals(product, cartItem.product) &&
+                Objects.equals(quantity, cartItem.quantity);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, product, quantity, total);
+    }
 }

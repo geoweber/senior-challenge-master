@@ -1,30 +1,32 @@
 package de.tarent.challenge.store.cart;
 
 
-
-
+/**
+ * validator for cart
+ */
 class CartValidator {
 
     //singleton construct
 
-    private CartValidator(){
+    private CartValidator() {
         super();
     }
-    private static  CartValidator instance=new CartValidator();
+
+    private static CartValidator instance = new CartValidator();
 
     static CartValidator getInstance() {
         return instance;
     }
 
 
-
     /**
+     * Check ob cat valid is.
      * Requirements for a cart:
-     * Contains a non-empty list of items
-     * Each item can have a specific quantity
+     * - Contains a non-empty list of items
+     * - Each item can have a specific quantity
      *
      * @param object - cart to validate
-     * @throws CartInvalidException - the cart is not correct
+     * @throws CartInvalidException - the cart is invalid
      */
     void validate(Cart object) throws CartInvalidException {
 
@@ -33,12 +35,12 @@ class CartValidator {
         }
 
         //Contains a non-empty list of items
-        if (object.getProducts() == null || object.getProducts().isEmpty()) {
+        if (object.getCartItems()== null || object.getCartItems().isEmpty()) {
             throw new CartInvalidException("Cart contains an empty list of items");
         }
 
         //Each item can have a specific quantity
-        for (CartItem item : object.getProducts()) {
+        for (CartItem item : object.getCartItems()) {
             if (item.getQuantity() <= 0) {
                 StringBuilder message = new StringBuilder();
                 message.append("The quantity for product name/sku [");

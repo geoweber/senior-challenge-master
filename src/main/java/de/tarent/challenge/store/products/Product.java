@@ -11,7 +11,9 @@ import javax.validation.constraints.Positive;
 import java.util.Objects;
 import java.util.Set;
 
-
+/**
+ * product entity
+ */
 @Data
 @Entity
 public class Product {
@@ -35,7 +37,7 @@ public class Product {
      * required, greater than 0
      */
     @Positive
-    private Integer price;
+    private Float price;
 
 
     /**
@@ -47,13 +49,13 @@ public class Product {
     private Set<String> eans;
 
     /**
-     * default constructor for hibernate
+     * default constructor for hibernate initialisation
      */
     private Product() {
         super();
     }
 
-    public Product(String sku, String name, Set<String> eans, int price) {
+    public Product(String sku, String name, Set<String> eans, float price) {
         this.sku = sku;
         this.name = name;
         this.eans = eans;
@@ -61,11 +63,7 @@ public class Product {
     }
 
 
-    /*
-    public Set<String> getEans() {
-        return Sets.newHashSet(eans);
-    }
-    */
+
 
     @Override
     public boolean equals(Object o) {

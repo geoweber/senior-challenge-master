@@ -18,3 +18,13 @@ INSERT INTO product_eans (product_id, eans) VALUES (5, '54342316');
 
 
 INSERT INTO customer (id, name, password) VALUES (1, 'user', 'welcome');
+
+INSERT INTO depot (id, product_id, quantity) VALUES (1, 5, 101);
+
+
+INSERT INTO cart (id, checked_out, checked_date) VALUES (1, 1, '2018-10-01 15:00:00');
+INSERT INTO cart_item (id, cart_id, product_id, quantity, total) VALUES (1, 1, 1, 10, 1025.80);
+INSERT INTO cart_item (id, cart_id, product_id, quantity, total) VALUES (2, 1, 2, 1, 2035.2);
+
+
+

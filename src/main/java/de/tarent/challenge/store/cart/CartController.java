@@ -1,62 +1,84 @@
 package de.tarent.challenge.store.cart;
 
-import de.tarent.challenge.store.products.*;
+
+import de.tarent.challenge.store.depot.DepotService;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-import java.util.Optional;
 
+
+/**
+ * RESTful resources for managing carts.
+ */
 @RestController
 public class CartController {
 
 
     private final CartService service;
 
-    private final ProductService productService;
+    private final DepotService depotService;
 
-    public CartController(CartService service, ProductService productService) {
+    public CartController(CartService service, DepotService depotService) {
         Assert.notNull(service, "CartService should be not null");
-        Assert.notNull(productService, "ProductService should be not null");
+        Assert.notNull(depotService, "DepotService should be not null");
         this.service = service;
-        this.productService = productService;
+        this.depotService = depotService;
     }
 
-    //Create a new cart / Update a cart
 
+    /**
+     * create or  update  a cart object
+     *
+     * @param object - cart to save - must not be {@literal null}.
+     * @return the saved cart will never be {@literal null}.
+     * @throws CartInvalidException -cart is invalid
+     */
     @PostMapping("/cart")
     public Cart save(@RequestBody Cart object) {
 
-        //CHECK: Carts that have been checked out cannot be changed anymore.
-        if (object != null && object.getId() != null) {
-
-            // get existing cart from db
-            Optional<Cart> optCart = service.retrieveById(object.getId());
-            if (optCart.isPresent() && optCart.get().isCheckedOut())
-                throw new CartNotUpdatableException("Cart (id=" + object.getId() + " have been checked out and cannot be changed anymore.");
-        }
+        // Validation
         CartValidator.getInstance().validate(object);
 
+        //Unavailable products cannot be added to a cart.
+        for (CartItem item : object.getCartItems()) {
+            int availableQuantityByProduct = depotService.getAvailableQuantityByProduct(item.getProduct());
+
+            if (availableQuantityByProduct < item.getQuantity()) {
+                StringBuilder message = new StringBuilder();
+                message.append("There are only  ");
+                message.append(availableQuantityByProduct);
+                message.append("  of product ");
+                message.append(item.getProduct().getSku());
+                message.append("  is now  available.  Your request - ");
+                message.append(item.getQuantity());
+                message.append(" could not be  fulfilled. Sorry!");
+                throw new CartInvalidException(message.toString());
+            }
+        }
+
+        //TODO Frage: wan andert scih der Lagerbestand? (beim cart save? or  beim cart check out?)
 
         return service.save(object);
     }
 
 
     /**
-     * Get cart by id
+     * Retrieves a cart by its id.
      *
-     * @param id - id of cart from interest
-     * @return cart by id
+     * @param id must not be {@literal null}.
+     * @return the cart with the given id or throw CartNotFoundException if none found
+     * @throws CartInvalidException -cart is invalid found
      */
     @GetMapping("/cart/{id}")
     public Cart retrieveById(@PathVariable Long id) {
         return service.retrieveById(id).orElseThrow(() -> new CartNotFoundException("Cart not found, id=" + id));
     }
 
+
     /**
-     * Get all existing cart
+     * Returns all carts.
      *
-     * @return list of products
+     * @return list of existing carts
      */
     @GetMapping("/carts")
     public List<Cart> all() {
@@ -65,7 +87,7 @@ public class CartController {
 
 
     /**
-     * Delete cart by id
+     * Deletes the given cart.
      *
      * @param id from deleted cart
      */

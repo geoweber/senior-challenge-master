@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Cart reporting</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<h1>Cart reporting. List of all carts</h1>
+<a href="showCart">Add Cart</a>
+<br/><br/>
+<div>
+    <table border="1">
+        <tr>
+            <th>Id</th>
+            <th>Is checked out?</th>
+            <th>checked date</th>
+        </tr>
+
+
+        <tr th:each="cart : ${carts}">
+
+            <td>
+                <a th:href="${'/showCart/' +cart.id}"><b th:text="${cart.id}">...</b></a>
+            </td>
+
+            <td th:utext="${cart.checkedOut}">...</td>
+            <td th:utext="${#temporals.format(cart.checkedDate, 'dd-MM-yyyy HH:mm')}">...</td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>
