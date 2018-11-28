@@ -2,7 +2,7 @@ package de.tarent.challenge.store.cart;
 
 public class CartNotFoundException extends RuntimeException {
 
-    CartNotFoundException(String message) {
+    public CartNotFoundException(String message) {
         super(message);
     }
 }

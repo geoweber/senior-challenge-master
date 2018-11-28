@@ -3,25 +3,54 @@
 <head>
     <title>Getting Started: Serving Web Content</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <style>
+        td {
+            text-align: right;
+        }
+    </style>
 </head>
 <body>
-<table>
-    <thead>
+
+<h1>Cart reporting. Product</h1>
+<br/>
+
+
+<table border="0">
     <tr>
-        <th> id</th>
-        <th> name</th>
-        <th> sku</th>
-        <th> price</th>
+        <td>Id:</td>
+        <td><b th:utext="${product.id}">...</b></td>
     </tr>
-    </thead>
-    <tbody>
-    <tr >
-        <td th:text="${product.id}"></td>
-        <td th:text="${product.name}"></td>
-        <td th:text="${product.sku}"></td>
-        <td th:text="${product.price}"></td>
+    <tr>
+        <td>Name:</td>
+        <td><b th:utext="${product.name}">...</b></td>
     </tr>
-    </tbody>
+    <tr>
+        <td>SKU:</td>
+        <td><b th:utext="${product.sku}">...</b></td>
+    </tr>
+
+    <tr>
+        <td>EANs:</td>
+
+        <td><b th:utext="${product.eans}">...</b></td>
+    </tr>
+
+    <tr>
+        <td>Price, €:</td>
+        <td><b th:utext="${#numbers.formatDecimal(product.price, 0, 'COMMA', 2, 'POINT')}">...</b></td>
+    </tr>
 </table>
+
+<br/>
+<br/>
+<br/>
+<a th:href="${'/ui'}"> <b> zurück  </b></a>
+<br/>
+<br/>
+
+<a th:href="${'/ui_products/'}"> <b> zurück zum 'List of products' </b></a>
+<br/>
+<br/>
+<a th:href="${'/ui_depot/'}"> <b> zurück zum 'List of available products' </b></a>
 </body>
 </html>

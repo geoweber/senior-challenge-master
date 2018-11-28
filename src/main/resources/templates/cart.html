@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Cart reporting</title>
+    <style>
+        td {
+            width: 150px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<!--
+   In Thymeleaf the equivalent of
+   JSP's ${pageContext.request.contextPath}/edit.html
+   would be @{/edit.html}
+   -->
+<h1>Cart reporting</h1>
+<h1>Show cart</h1>
+<br/><br/>
+
+
+<table border="0">
+    <tr>
+        <td>Id:</td>
+        <td><b th:utext="${cart.id}">...</b></td>
+    </tr>
+    <tr>
+        <td>Checkout?:</td>
+        <td><b th:utext="${cart.checkedOut}">...</b></td>
+    </tr>
+    <tr>
+        <td>Checkout Date:</td>
+        <td><b th:utext="${cart.checkedDate} ? ${#temporals.format(cart.checkedDate, 'dd-MM-yyyy HH:mm')}">...</b></td>
+    </tr>
+
+    <tr>
+        <td>Price:</td>
+        <td><b th:utext="${#numbers.formatDecimal(cart.total, 0, 'COMMA', 2, 'POINT')}">...</b></td>
+        </td>
+    </tr>
+</table>
+
+<table border="1">
+    <tr>
+        <th>Id</th>
+        <th>product sku</th>
+        <th>product name</th>
+        <th>product price, €</th>
+        <th>quantity</th>
+        <th>total, €</th>
+    </tr>
+    <tr th:each="item : ${cart.cartItems}">
+        <td th:utext="${item.id}">...</td>
+        <td th:utext="${item.product.sku}">...</td>
+        <td th:utext="${item.product.name}">...</td>
+        <td th:utext="${#numbers.formatDecimal(item.product.price, 0, 'COMMA', 2, 'POINT')}"  style="text-align: right">...</td>
+        <td th:utext="${item.quantity}">...</td>
+        <td th:utext="${#numbers.formatDecimal(item.total, 0, 'COMMA', 2, 'POINT')}"  style="text-align: right">...</td>
+    </tr>
+</table>
+
+<br/>
+<br/>
+<a href="/ui">zurück</a>
+
+
+</body>
+</html>

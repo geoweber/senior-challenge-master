@@ -3,31 +3,47 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Cart reporting</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+    <style>
+        td {
+            width: 150px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-<h1>Cart reporting. List of all carts</h1>
-<a href="showCart">Add Cart</a>
+
+<h1>Cart reporting</h1>
+<h2 th:utext="${title}"></h2>
+
 <br/><br/>
-<div>
-    <table border="1">
-        <tr>
-            <th>Id</th>
-            <th>Is checked out?</th>
-            <th>checked date</th>
-        </tr>
+<table border="1">
+    <tr>
+        <th>Id</th>
+        <th>Total price, €</th>
+        <th>is checked out</th>
+        <th>checked date</th>
+    </tr>
 
 
-        <tr th:each="cart : ${carts}">
+    <tr th:each="cart : ${carts}">
 
-            <td>
-                <a th:href="${'/showCart/' +cart.id}"><b th:text="${cart.id}">...</b></a>
-            </td>
+        <td>
+            <a th:href="${'/showCart/' +cart.id}"><b th:text="${cart.id}">...</b></a>
+        </td>
+        <td style="text-align: right;">
+            <a th:href="${'/showCart/' +cart.id}"> <b
+                    th:text="${#numbers.formatDecimal(cart.total, 0, 'COMMA', 2, 'POINT')}">...</b></a>
+        </td>
 
-            <td th:utext="${cart.checkedOut}">...</td>
-            <td th:utext="${#temporals.format(cart.checkedDate, 'dd-MM-yyyy HH:mm')}">...</td>
-        </tr>
-    </table>
-</div>
+        <td th:utext="${cart.checkedOut}">...</td>
+
+        <td th:text="${cart.checkedDate} ? ${#temporals.format(cart.checkedDate, 'dd-MM-yyyy HH:mm')}">...</td>
+    </tr>
+</table>
+
+<br/>
+<br/>
+<a href="/ui">zurück</a>
+
 </body>
 </html>

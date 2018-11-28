@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cart reporting</title>
+    <style>
+        tr {
+            height: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Cart reporting:</h1>
+
+<table>
+    <tr>
+        <td>
+            <a th:href="${'/ui_products/'}"> <b> List of products </b></a>
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            <a th:href="${'/ui_depot/'}"> <b> List of available products </b></a>
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            <a th:href="${'/ui_carts/'}"> <b> List of carts </b></a>
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            <a th:href="${'/ui_checked_carts/'}"> <b> List of 'checked out' carts </b></a>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>

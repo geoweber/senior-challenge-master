@@ -39,6 +39,7 @@ public class CartController {
         // Validation
         CartValidator.getInstance().validate(object);
 
+        float total=0f;
         //Unavailable products cannot be added to a cart.
         for (CartItem item : object.getCartItems()) {
             int availableQuantityByProduct = depotService.getAvailableQuantityByProduct(item.getProduct());
@@ -54,9 +55,15 @@ public class CartController {
                 message.append(" could not be  fulfilled. Sorry!");
                 throw new CartInvalidException(message.toString());
             }
+            // calculate total price
+            total+=item.getTotal();
         }
 
-        //TODO Frage: wan andert scih der Lagerbestand? (beim cart save? or  beim cart check out?)
+        //TODO Frage: wan andert sich der Lagerbestand? (beim cart save? or  beim cart check out?)
+
+
+        //save total price
+        object.setTotal(total);
 
         return service.save(object);
     }

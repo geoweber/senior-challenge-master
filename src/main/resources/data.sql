@@ -1,3 +1,5 @@
+
+
 INSERT INTO product (id, name, sku, price) VALUES (1, 'Milch', '102',102.58);
 INSERT INTO product (id, name, sku, price) VALUES (2, 'Brot', '2035', 2035.2);
 INSERT INTO product (id, name, sku, price) VALUES (3, 'Käse', 'S-155', 135.03);
@@ -21,10 +23,16 @@ INSERT INTO customer (id, name, password) VALUES (1, 'user', 'welcome');
 
 INSERT INTO depot (id, product_id, quantity) VALUES (1, 5, 101);
 
-
-INSERT INTO cart (id, checked_out, checked_date) VALUES (1, 1, '2018-10-01 15:00:00');
+INSERT INTO cart (id, checked_out, checked_date, total) VALUES (1, 1, '2018-10-01 15:00:00', 3061.00);
 INSERT INTO cart_item (id, cart_id, product_id, quantity, total) VALUES (1, 1, 1, 10, 1025.80);
 INSERT INTO cart_item (id, cart_id, product_id, quantity, total) VALUES (2, 1, 2, 1, 2035.2);
 
+
+INSERT INTO cart (id, checked_out, checked_date, total) VALUES (2, 0, null, 3061.00);
+INSERT INTO cart_item (id, cart_id, product_id, quantity, total) VALUES (3, 2, 1, 10, 1025.80);
+INSERT INTO cart_item (id, cart_id, product_id, quantity, total) VALUES (4, 2, 2, 1, 2035.2);
+
+INSERT INTO cart (id, checked_out, checked_date, total) VALUES (3, 0, null, 1.05);
+INSERT INTO cart_item (id, cart_id, product_id, quantity, total) VALUES (5, 3, 5, 1, 1.05);
 
 

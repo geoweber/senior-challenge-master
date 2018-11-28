@@ -106,7 +106,7 @@ class CartServiceTest {
     @Test
     void retrieveAll() {
 
-        assertEquals(1, service.retrieveAll().size());
+        assertEquals(3, service.retrieveAll().size());
 
         Cart object1 = new Cart();
         Set<CartItem> items1 = new HashSet<>();
@@ -130,14 +130,13 @@ class CartServiceTest {
         object2.setCheckedDate(checkedDate);
         service.save(object2);
 
-        assertEquals(3, service.retrieveAll().size());
+        assertEquals(5, service.retrieveAll().size());
         for (Cart cart : service.retrieveAll()) {
             service.delete(cart);
         }
         assertTrue(service.retrieveAll().isEmpty());
-
-
     }
+
 
     @Test
     void retrieveById() {
@@ -169,4 +168,47 @@ class CartServiceTest {
     }
 
 
+    @Test
+    void retrieveByCheckedOut() {
+        Cart object = new Cart();
+        Set<CartItem> items = new HashSet<>();
+        Product product1 = productService.retrieveBySku("S-155");
+        CartItem item1 = new CartItem(product1, 5);
+        item1.setCart(object);
+        items.add(item1);
+
+        object.setCartItems(items);
+        object.setCheckedOut(true);
+        LocalDateTime checkedDate = LocalDateTime.now();
+        object.setCheckedDate(checkedDate);
+        service.save(object);
+
+        assertFalse(service.retrieveByCheckedOut(true).isEmpty());
+
+        for (Cart cart : service.retrieveByCheckedOut(true)) {
+            assertTrue(cart.isCheckedOut());
+        }
+
+        //--------------------------------------------------------
+
+
+        object = new Cart();
+        items = new HashSet<>();
+        product1 = productService.retrieveBySku("S-155");
+        item1 = new CartItem(product1, 5);
+        item1.setCart(object);
+        items.add(item1);
+
+        object.setCartItems(items);
+        object.setCheckedOut(false);
+        checkedDate = LocalDateTime.now();
+        object.setCheckedDate(checkedDate);
+        service.save(object);
+
+        assertFalse(service.retrieveByCheckedOut(false).isEmpty());
+
+        for (Cart cart : service.retrieveByCheckedOut(false)) {
+            assertFalse(cart.isCheckedOut());
+        }
+    }
 }

@@ -28,6 +28,8 @@ public class Cart {
 
     private boolean checkedOut;
 
+    private float total;
+
     @DateTimeFormat(pattern = "HH:mm MM-dd-yyyy")
     private LocalDateTime checkedDate;
 
@@ -37,6 +39,7 @@ public class Cart {
         if (o == null || getClass() != o.getClass()) return false;
         Cart cart = (Cart) o;
         return checkedOut == cart.checkedOut &&
+                Float.compare(cart.total, total) == 0 &&
                 Objects.equals(id, cart.id) &&
                 Objects.equals(cartItems, cart.cartItems) &&
                 Objects.equals(checkedDate, cart.checkedDate);
@@ -44,6 +47,6 @@ public class Cart {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, cartItems, checkedOut, checkedDate);
+        return Objects.hash(id, cartItems, checkedOut, total, checkedDate);
     }
 }

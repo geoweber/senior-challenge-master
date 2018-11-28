@@ -9,8 +9,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Product findBySku(String sku);
 
-    // pay attention
-    // name is not unique
+    // pay attention:
+    // name is not unique!
     @Query("select p from Product p where LOWER(p.name) like LOWER(?1)")
     List<Product> findByName(String name);
 

@@ -23,7 +23,6 @@ public class CartService {
 
 
     public Cart save(Cart object) {
-
         //CHECK: Carts that have been checked out cannot be changed anymore.
         if (object != null && object.getId() != null) {
 
@@ -42,16 +41,16 @@ public class CartService {
 
 
     public Optional<Cart> retrieveById(Long id) {
-
         return repository.findById(id);
     }
 
 
+    public List<Cart> retrieveByCheckedOut(boolean checkedOut) {
+        return repository.findByCheckedOutOrderByCheckedDateDesc(checkedOut);
+    }
+
+
     public void delete(Cart object) {
-
-
-
-
         for (CartItem item : object.getCartItems()) {
             item.setCart(null);
         }

@@ -11,7 +11,7 @@
 </head>
 <body>
 
-<h1>Cart reporting. List of all products</h1>
+<h1>Cart reporting. List of all available products</h1>
 <br/>
 
 <table border="1">
@@ -21,23 +21,26 @@
         <th> Name</th>
         <th> SKU</th>
         <th> Price, €</th>
+        <th> available quantity </th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="product, rowStat: ${products}"
+    <tr th:each="depot, rowStat: ${depots}"
         th:style="${rowStat.odd} ? 'color: gray' : 'color: blue;'">
-        <td th:text="${product.id}"></td>
+        <td th:text="${depot.id}"></td>
 
         <td style="text-align: center; width: 100px;">
-            <a th:href="${'/showProduct/' +product.id}"><b th:text="${product.name}">...</b></a>
+            <a th:href="${'/showProduct/' +depot.product.id}"><b th:text="${depot.product.name}">...</b></a>
         </td>
 
         <td  style="text-align: center; width: 100px;">
-            <a th:href="${'/showProduct/' +product.id}"><b th:text="${product.sku}">...</b></a>
+            <a th:href="${'/showProduct/' +depot.product.id}"><b th:text="${depot.product.sku}">...</b></a>
         </td>
 
-        <td th:utext="${#numbers.formatDecimal(product.price, 0, 'COMMA', 2, 'POINT')}" style="text-align: right; width: 100px;">...
+        <td th:utext="${#numbers.formatDecimal(depot.product.price, 0, 'COMMA', 2, 'POINT')}" style="text-align: right; width: 100px;">...
         </td>
+
+        <td th:text="${depot.quantity}" style="text-align: right;"></td>
     </tr>
     </tbody>
 </table>

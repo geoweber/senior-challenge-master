@@ -1,7 +1,7 @@
 package de.tarent.challenge.store.products;
 
-class ProductNotFoundException extends RuntimeException {
-    ProductNotFoundException(String message) {
+public class ProductNotFoundException extends RuntimeException {
+    public ProductNotFoundException(String message) {
         super(message);
     }
 }
